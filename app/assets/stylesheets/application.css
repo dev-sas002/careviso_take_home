@@ -18,12 +18,55 @@
   --brand: #0f766e;
   --brand-dark: #115e59;
   --brand-tint: #e6f2f0;
+  --focus: #b45309;
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --bs-link-color-rgb: 15, 118, 110;
+  --bs-link-hover-color-rgb: 17, 94, 89;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 body {
   background-color: var(--page);
   color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-sans);
+}
+
+code,
+.col-id,
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* Keyboard focus is amber against the teal brand, so it never blends in. */
+:focus-visible,
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible,
+.nav-link:focus-visible {
+  box-shadow: none;
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  background: var(--surface);
+  border-radius: 0 0 0.5rem 0;
+  color: var(--brand-dark);
+  font-weight: 600;
+  left: 0;
+  padding: 0.6rem 1rem;
+  position: absolute;
+  top: 0;
+  transform: translateY(-120%);
+  z-index: 1080;
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+main:focus {
+  outline: none;
 }
 
 /* Navbar ------------------------------------------------------------------ */
@@ -66,6 +109,10 @@ body {
 .app-navbar .nav-link.active {
   background: rgba(255, 255, 255, 0.14);
   color: #ffffff;
+}
+
+.app-navbar :focus-visible {
+  outline-color: #fcd34d;
 }
 
 .app-navbar .navbar-toggler {
@@ -156,7 +203,11 @@ body {
   text-decoration: underline;
 }
 
-.table-actions .btn + .btn {
+.table-actions {
+  white-space: nowrap;
+}
+
+.table-actions > * + * {
   margin-left: 0.35rem;
 }
 
@@ -284,8 +335,71 @@ body {
   min-height: 38px;
 }
 
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+  border-color: var(--brand);
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable,
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+  background-color: var(--brand);
+  color: #ffffff;
+}
+
+.select2-container--default .select2-results__option--selected {
+  background-color: var(--brand-tint);
+  color: var(--brand-dark);
+}
+
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
   background-color: var(--brand-tint);
   border-color: #cfe3e0;
   color: var(--brand-dark);
+}
+
+/* Small screens ----------------------------------------------------------- */
+
+@media (max-width: 575.98px) {
+  .page-title {
+    font-size: 1.4rem;
+  }
+
+  .page-actions {
+    width: 100%;
+  }
+
+  .page-actions .btn {
+    width: 100%;
+  }
+
+  .detail-list {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-list dd {
+    margin-bottom: 0.6rem;
+  }
+
+  .table > tbody > tr > td,
+  .table > thead > tr > th {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .table-actions {
+    white-space: normal;
+  }
+
+  .table-actions > * {
+    display: block;
+  }
+
+  .table-actions > * + * {
+    margin-left: 0;
+    margin-top: 0.35rem;
+  }
+
+  .table-actions .btn {
+    width: 100%;
+  }
 }

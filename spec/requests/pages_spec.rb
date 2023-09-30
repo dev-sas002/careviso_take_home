@@ -94,4 +94,29 @@ RSpec.describe "HTML pages", type: :request do
     expect(response).to have_http_status(:service_unavailable)
     expect(response.parsed_body["status"]).to eq("error")
   end
+
+  describe "markup that has to work without JavaScript or a mouse" do
+    it "renders delete controls as DELETE forms with a confirm prompt" do
+      get orders_path
+
+      form = response.parsed_body.at_css("form[action='#{order_path(order)}']")
+      expect(form["data-confirm"]).to eq("Delete order ##{order.id}?")
+      expect(form.at_css("input[name='_method']")["value"]).to eq("delete")
+    end
+
+    it "marks the current section in the navigation" do
+      get packages_path
+
+      current = response.parsed_body.css("nav a[aria-current='page']").map(&:text)
+      expect(current).to eq(["Packages"])
+    end
+
+    it "offers a skip link to the main content" do
+      get products_path
+
+      page = response.parsed_body
+      expect(page.at_css("a.skip-link")["href"]).to eq("#main")
+      expect(page.at_css("main#main")).to be_present
+    end
+  end
 end

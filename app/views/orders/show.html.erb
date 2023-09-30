@@ -56,6 +56,5 @@
 
 <div class="d-flex gap-2 mt-4">
   <%= link_to "Edit order", edit_order_path(@order), class: "btn btn-sm btn-outline-secondary" %>
-  <%= link_to "Delete order", @order, method: :delete, class: "btn btn-sm btn-outline-danger",
-              data: { confirm: "Delete order ##{@order.id}?" } %>
+  <%= delete_button @order, confirm: "Delete order ##{@order.id}?", label: "Delete order" %>
 </div>

@@ -1,7 +1,7 @@
-<nav class="navbar navbar-expand-lg app-navbar">
+<nav class="navbar navbar-expand-md app-navbar" data-bs-theme="dark" aria-label="Main">
   <div class="container">
     <%= link_to root_path, class: "navbar-brand" do %>
-      <span class="brand-mark">cv</span>
+      <span class="brand-mark" aria-hidden="true">cv</span>
       <span>Order Packaging</span>
     <% end %>
 
@@ -14,7 +14,8 @@
       <ul class="navbar-nav ms-auto">
         <% { "Orders" => orders_path, "Packages" => packages_path, "Products" => products_path }.each do |label, path| %>
           <li class="nav-item">
-            <%= link_to label, path, class: "nav-link #{'active' if request.path.start_with?(path)}" %>
+            <% current = request.path.start_with?(path) %>
+            <%= link_to label, path, class: ["nav-link", { active: current }], aria: { current: ("page" if current) } %>
           </li>
         <% end %>
       </ul>

@@ -8,12 +8,14 @@
     <% if pagination.total_pages > 1 %>
       <span class="btn-group btn-group-sm">
         <%= link_to "Previous", url_for(page: pagination.page - 1),
-                    class: "btn btn-outline-secondary #{'disabled' if pagination.first_page?}" %>
-        <span class="btn btn-outline-secondary disabled">
+                    class: ["btn btn-outline-secondary", { disabled: pagination.first_page? }],
+                    aria: { disabled: pagination.first_page? || nil }, tabindex: (-1 if pagination.first_page?) %>
+        <span class="btn btn-outline-secondary disabled" aria-current="page">
           Page <%= pagination.page %> of <%= pagination.total_pages %>
         </span>
         <%= link_to "Next", url_for(page: pagination.page + 1),
-                    class: "btn btn-outline-secondary #{'disabled' if pagination.last_page?}" %>
+                    class: ["btn btn-outline-secondary", { disabled: pagination.last_page? }],
+                    aria: { disabled: pagination.last_page? || nil }, tabindex: (-1 if pagination.last_page?) %>
       </span>
     <% end %>
   </nav>
