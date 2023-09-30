@@ -19,7 +19,9 @@ class PackageSelectorsController < ApplicationController
   private
 
   def order
-    @order ||= Order.find(params[:order_id])
+    # A missing order_id is "no such order" (404), as the endpoint documents,
+    # rather than the 400 that params.expect would raise.
+    @order ||= Order.find(params[:order_id]) # rubocop:disable Rails/StrongParametersExpect
   end
 
   def order_not_found
@@ -28,6 +30,6 @@ class PackageSelectorsController < ApplicationController
 
   def search_too_large(error)
     Rails.logger.warn("[package_selection] #{error.message}")
-    render json: { error: "Order is too large to package synchronously" }, status: :unprocessable_entity
+    render json: { error: "Order is too large to package synchronously" }, status: :unprocessable_content
   end
 end

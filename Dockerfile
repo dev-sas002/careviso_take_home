@@ -6,19 +6,14 @@
 #   docker compose up --build        boots Postgres + the app, seeded
 #   docker compose run --rm test     runs the spec suite in the builder stage
 #
-# Ruby 3.0.2 rather than the 3.0.1 in .ruby-version: there is no official 3.0.1
-# image on a Debian release that still has package archives, and the Gemfile
-# allows any 3.0.x.
-ARG RUBY_VERSION=3.0.2
+# RUBY_VERSION matches .ruby-version; NODE_VERSION matches the major in .nvmrc.
+ARG RUBY_VERSION=3.4.12
 ARG NODE_VERSION=24.22.2
 
 # --- base -------------------------------------------------------------------
-FROM ruby:${RUBY_VERSION}-slim-bullseye AS base
+FROM ruby:${RUBY_VERSION}-slim-bookworm AS base
 
-# Bullseye is past its archive date, so apt is pointed at archive.debian.org.
-RUN printf 'deb http://archive.debian.org/debian bullseye main\n' > /etc/apt/sources.list \
- && printf 'Acquire::Check-Valid-Until "false";\n' > /etc/apt/apt.conf.d/99no-check-valid \
- && apt-get update -qq \
+RUN apt-get update -qq \
  && apt-get install -y --no-install-recommends \
       curl libpq5 postgresql-client tzdata \
  && rm -rf /var/lib/apt/lists/*
@@ -40,7 +35,7 @@ ARG NODE_VERSION
 
 RUN apt-get update -qq \
  && apt-get install -y --no-install-recommends \
-      build-essential git libpq-dev xz-utils \
+      build-essential git libpq-dev libyaml-dev xz-utils \
  && rm -rf /var/lib/apt/lists/*
 
 # esbuild (via jsbundling-rails) needs Node and Yarn to bundle
@@ -56,8 +51,8 @@ RUN set -eux; \
     rm /tmp/node.tar.xz; \
     npm install -g yarn@1.22.22
 
-COPY Gemfile Gemfile.lock ./
-RUN bundle install && rm -rf "${BUNDLE_PATH}"/ruby/*/cache
+COPY Gemfile Gemfile.lock .ruby-version ./
+RUN bundle config set --local frozen true && bundle install && rm -rf "${BUNDLE_PATH}"/ruby/*/cache
 
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --network-timeout 600000

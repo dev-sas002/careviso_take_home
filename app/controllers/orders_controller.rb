@@ -57,10 +57,10 @@ class OrdersController < ApplicationController
   end
 
   def find_order
-    @order = Order.includes(:products).find(params[:id])
+    @order = Order.includes(:products).find(params.expect(:id))
   end
 
   def order_params
-    params.require(:order).permit(product_ids: [])
+    params.expect(order: [{ product_ids: [] }])
   end
 end

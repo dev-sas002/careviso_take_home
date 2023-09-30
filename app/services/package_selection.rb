@@ -8,13 +8,16 @@
 # `PackageSelector` (app/services/package_selector.rb) is the facade callers use.
 module PackageSelection
   # Base class for every error this namespace raises.
-  Error = Class.new(StandardError)
+  class Error < StandardError
+  end
 
   # Raised when a strategy is asked for by a name nothing is registered under.
-  UnknownStrategyError = Class.new(Error)
+  class UnknownStrategyError < Error
+  end
 
   # Raised when the search exceeds its configured work budget. Minimum exact
   # cover is NP-hard, so a synchronous request has to be able to give up rather
   # than tie up a Puma thread indefinitely.
-  SearchLimitExceeded = Class.new(Error)
+  class SearchLimitExceeded < Error
+  end
 end

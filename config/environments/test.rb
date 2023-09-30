@@ -9,7 +9,7 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Turn false under Spring and add config.action_view.cache_template_loading = true.
-  config.cache_classes = true
+  config.enable_reloading = false
 
   # Eager loading loads your whole application. When running a single test locally,
   # this probably isn't necessary. It's a good idea to do in a continuous integration
@@ -28,13 +28,10 @@ Rails.application.configure do
   config.cache_store = :null_store
 
   # Raise exceptions instead of rendering exception templates.
-  config.action_dispatch.show_exceptions = false
+  config.action_dispatch.show_exceptions = :none
 
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
-
-  # Store uploaded files on the local file system in a temporary directory.
-  config.active_storage.service = :test
 
   config.action_mailer.perform_caching = false
 

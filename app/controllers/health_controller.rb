@@ -2,7 +2,7 @@
 # actually touches the database so that "up" means "can serve a request".
 class HealthController < ApplicationController
   def show
-    Order.connection.select_value("SELECT 1")
+    ActiveRecord::Base.with_connection { |connection| connection.select_value("SELECT 1") }
     render json: { status: "ok", database: "ok" }
   rescue StandardError => e
     Rails.logger.error("[health] #{e.class}: #{e.message}")

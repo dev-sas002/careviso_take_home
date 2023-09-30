@@ -50,10 +50,10 @@ class PackagesController < ApplicationController
   end
 
   def find_package
-    @package = Package.find(params[:id])
+    @package = Package.find(params.expect(:id))
   end
 
   def package_params
-    params.require(:package).permit(:name, product_ids: [])
+    params.expect(package: [:name, { product_ids: [] }])
   end
 end

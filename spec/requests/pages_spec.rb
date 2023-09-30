@@ -87,7 +87,7 @@ RSpec.describe "HTML pages", type: :request do
   end
 
   it "reports unhealthy when the database is unreachable" do
-    allow(Order).to receive(:connection).and_raise(ActiveRecord::ConnectionNotEstablished)
+    allow(ActiveRecord::Base).to receive(:with_connection).and_raise(ActiveRecord::ConnectionNotEstablished)
 
     get "/health"
 

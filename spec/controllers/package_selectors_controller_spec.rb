@@ -82,7 +82,7 @@ RSpec.describe PackageSelectorsController, type: :controller do
 
         get :select_optimal_packages, params: { order_id: order.id }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.parsed_body["error"]).to eq("Order is too large to package synchronously")
       end
     end

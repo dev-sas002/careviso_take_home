@@ -60,7 +60,7 @@ RSpec.describe ProductsController, type: :controller do
         json_response = response.parsed_body
 
         expect(response).to have_http_status(:bad_request)
-        expect(json_response["error"]).to match(/param is missing or the value is empty: product/)
+        expect(json_response["error"]).to match(/param is missing or the value is empty or invalid: product/)
       end
     end
   end
@@ -108,7 +108,7 @@ RSpec.describe ProductsController, type: :controller do
         json_response = response.parsed_body
 
         expect(response).to have_http_status(:bad_request)
-        expect(json_response["error"]).to match(/param is missing or the value is empty: product/)
+        expect(json_response["error"]).to match(/param is missing or the value is empty or invalid: product/)
       end
     end
   end

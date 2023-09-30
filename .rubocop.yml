@@ -1,10 +1,10 @@
 # Kept deliberately small: the defaults, plus the handful of relaxations this
 # codebase actually warrants. Run it with `bin/lint`.
-require:
+plugins:
   - rubocop-rails
 
 AllCops:
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.4
   NewCops: enable
   SuggestExtensions: false
   Exclude:
@@ -64,6 +64,12 @@ Rails/I18nLocaleTexts:
 # Rake tasks print aligned tables; positional format tokens are the readable
 # form there.
 Style/FormatStringToken:
+  Exclude:
+    - "lib/tasks/**/*"
+
+# The table headers go through the same format string as their rows, so the
+# column widths live in one place.
+Style/RedundantFormat:
   Exclude:
     - "lib/tasks/**/*"
 

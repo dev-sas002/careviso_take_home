@@ -57,9 +57,7 @@ module PackageSelection
       @products.each_with_index.filter_map { |name, index| name if mask[index] == 1 }
     end
 
-    def size
-      @candidates.size
-    end
+    delegate :size, to: :@candidates
 
     private
 
@@ -94,16 +92,16 @@ module PackageSelection
 
     # Accepts the shapes callers actually have: one hash of many packages, an
     # array of single-pair hashes, or an array of [name, products] pairs.
-    def each_package(packages, &block)
+    def each_package(packages, &)
       return enum_for(:each_package, packages) unless block_given?
 
       entries = packages.is_a?(Hash) ? [packages] : Array(packages)
-      entries.each { |entry| each_pair(entry, &block) }
+      entries.each { |entry| each_pair(entry, &) }
     end
 
-    def each_pair(entry, &block)
+    def each_pair(entry, &)
       case entry
-      when Hash then entry.each(&block)
+      when Hash then entry.each(&)
       when Array then yield(entry.first, entry.last)
       end
     end

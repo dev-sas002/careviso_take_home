@@ -5,7 +5,6 @@
 # Times the exact-cover solver against the exhaustive search it replaced, on
 # synthetic catalogues that grow along the two axes that matter: how many
 # products are on the order, and how many packages are in the catalogue.
-require "benchmark"
 
 BENCHMARK_CASES = [
   { order_size: 3,  package_count: 6,    label: "the brief's example" },
@@ -19,6 +18,14 @@ BENCHMARK_CASES = [
 BRUTE_FORCE_CEILING = 20 # surviving candidates; above this 2^P stops finishing
 
 namespace :package_selection do
+  # Benchmark.realtime without the benchmark gem, which leaves Ruby's default
+  # gems in 4.0.
+  def elapsed_seconds
+    started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    yield
+    Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
+  end
+
   desc "Benchmark the package selection strategies across catalogue sizes"
   task benchmark: :environment do
     require Rails.root.join("lib/catalog_builder").to_s
@@ -39,10 +46,10 @@ namespace :package_selection do
       solver = PackageSelection::Strategies::ExactCover.new(catalog)
 
       fast_result = nil
-      fast = Benchmark.realtime { fast_result = solver.call }
+      fast = elapsed_seconds { fast_result = solver.call }
 
       slow = if catalog.size <= BRUTE_FORCE_CEILING
-               Benchmark.realtime { PackageSelection::Strategies::BruteForce.call(catalog) }
+               elapsed_seconds { PackageSelection::Strategies::BruteForce.call(catalog) }
              end
 
       puts format("%-22s %7d %9d %10d %10s %12s %12s",
@@ -74,7 +81,7 @@ namespace :package_selection do
       catalog = PackageSelection::Catalog.new(order, packages)
       solver = PackageSelection::Strategies::ExactCover.new(catalog)
 
-      elapsed = Benchmark.realtime { solver.call }
+      elapsed = elapsed_seconds { solver.call }
 
       puts format("%7d %9d %10d %14d %12s",
                   order_size, packages.size, catalog.size, solver.states_visited,
@@ -98,7 +105,7 @@ namespace :package_selection do
       catalog = PackageSelection::Catalog.new(order, packages)
       solver = PackageSelection::Strategies::ExactCover.new(catalog, max_states: 5_000_000)
 
-      elapsed = Benchmark.realtime { solver.call }
+      elapsed = elapsed_seconds { solver.call }
 
       puts format("%7d %9d %15d %12s",
                   order_size, packages.size, solver.states_visited, format("%.1f ms", elapsed * 1000))

@@ -5,7 +5,7 @@
 #   docker compose down -v          -> stop and delete the database volume
 services:
   db:
-    image: postgres:14-alpine
+    image: postgres:17-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
