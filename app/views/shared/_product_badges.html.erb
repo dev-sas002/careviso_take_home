@@ -1,0 +1,10 @@
+<%# Locals: products %>
+<% if products.empty? %>
+  <span class="text-muted">—</span>
+<% else %>
+  <span class="badge-list">
+    <% products.each do |product| %>
+      <span class="badge product-badge"><%= product.respond_to?(:name) ? product.name : product %></span>
+    <% end %>
+  </span>
+<% end %>

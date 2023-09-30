@@ -1,0 +1,51 @@
+# Bundler config and installed gems.
+/.bundle
+/vendor/bundle
+
+# Logs and temp files (tmp/ also holds the generated development secret).
+/log
+/tmp
+*.log
+
+# Uploaded files in development.
+/storage/*
+!/storage/.keep
+
+# Compiled assets.
+/public/assets
+/public/packs
+/public/packs-test
+/app/assets/builds/*
+!/app/assets/builds/.keep
+
+# Keys for decrypting credentials.
+/config/master.key
+/config/credentials/*.key
+*.key
+
+# JavaScript dependencies.
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+package-lock.json
+
+# Local Python virtualenv left over from tooling; not part of the app.
+/project_venv
+
+# Environment files; the documented template is kept.
+.env
+.env.*
+!.env.example
+
+# Test coverage, caches, OS and editor noise.
+/coverage
+.rspec_status
+.DS_Store
+.cursor/
+.github/
+
+# Personal working notes.
+instructions.md
+**/instructions*.md
+**/*plan*.md

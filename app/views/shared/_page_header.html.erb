@@ -1,0 +1,12 @@
+<%# Locals: title, subtitle (optional), actions (optional block of HTML) %>
+<header class="page-header">
+  <div>
+    <h1 class="page-title"><%= title %></h1>
+    <% if local_assigns[:subtitle].present? %>
+      <p class="page-subtitle"><%= subtitle %></p>
+    <% end %>
+  </div>
+  <% if local_assigns[:actions].present? %>
+    <div class="page-actions"><%= actions %></div>
+  <% end %>
+</header>

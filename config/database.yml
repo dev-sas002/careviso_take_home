@@ -1,0 +1,22 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV["DB_HOST"] %>
+  port: <%= ENV.fetch("DB_PORT", 5432) %>
+  username: <%= ENV.fetch("DB_USERNAME", "postgres") %>
+  password: <%= ENV["DB_PASSWORD"] %>
+
+development:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME", "careviso_take_home_development") %>
+
+test:
+  <<: *default
+  database: <%= ENV.fetch("TEST_DB_NAME", "careviso_take_home_test") %>
+
+production:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME", "careviso_take_home_production") %>
+  username: <%= ENV.fetch("DB_USERNAME", "careviso_take_home") %>
+  password: <%= ENV["DB_PASSWORD"] || ENV["CAREVISO_TAKE_HOME_DATABASE_PASSWORD"] %>

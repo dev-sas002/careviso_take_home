@@ -1,0 +1,57 @@
+# One command, no manual steps:
+#
+#   docker compose up --build       -> http://localhost:8180 (seeded)
+#   docker compose run --rm test    -> the spec suite
+#   docker compose down -v          -> stop and delete the database volume
+services:
+  db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: careviso_take_home_production
+    ports:
+      - "8181:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      target: runtime
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: careviso_take_home_production
+      # Development-only placeholder. A real deployment supplies its own.
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-dev-secret-key-base-not-for-production}
+      PACKAGE_SELECTION_STRATEGY: ${PACKAGE_SELECTION_STRATEGY:-exact_cover}
+    ports:
+      - "8180:3000"
+
+  test:
+    build:
+      context: .
+      target: builder
+    profiles: ["test"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      RAILS_ENV: test
+      DB_HOST: db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    command: bash -c "bundle exec rails db:test:prepare && bundle exec rspec"
+
+volumes:
+  pgdata:

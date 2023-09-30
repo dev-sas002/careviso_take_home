@@ -1,0 +1,5 @@
+<% content_for :title, "Edit order ##{@order.id}" %>
+
+<%= render "shared/page_header", title: "Edit order ##{@order.id}",
+           subtitle: "Changing the products recomputes the shipment." %>
+<%= render "form" %>
