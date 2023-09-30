@@ -1,0 +1,3 @@
+/* Third-party CSS, bundled by esbuild into app/assets/builds/vendor.css. */
+@import "bootstrap/dist/css/bootstrap.css";
+@import "select2/dist/css/select2.css";

@@ -10,7 +10,7 @@
 # image on a Debian release that still has package archives, and the Gemfile
 # allows any 3.0.x.
 ARG RUBY_VERSION=3.0.2
-ARG NODE_VERSION=16.20.2
+ARG NODE_VERSION=24.22.2
 
 # --- base -------------------------------------------------------------------
 FROM ruby:${RUBY_VERSION}-slim-bullseye AS base
@@ -43,8 +43,8 @@ RUN apt-get update -qq \
       build-essential git libpq-dev xz-utils \
  && rm -rf /var/lib/apt/lists/*
 
-# Webpacker 5 needs Node and Yarn to build the packs. Neither reaches the
-# runtime image.
+# esbuild (via jsbundling-rails) needs Node and Yarn to bundle
+# app/javascript. Neither reaches the runtime image.
 RUN set -eux; \
     case "$(dpkg --print-architecture)" in \
       amd64) node_arch=x64 ;; \
@@ -64,7 +64,8 @@ RUN yarn install --frozen-lockfile --network-timeout 600000
 
 COPY . .
 
-# Compiles app/javascript into public/packs and app/assets into public/assets.
+# `yarn build` bundles app/javascript into app/assets/builds, then Sprockets
+# fingerprints everything into public/assets.
 # SECRET_KEY_BASE only has to exist for the production environment to boot.
 RUN SECRET_KEY_BASE=precompile-placeholder \
     RAILS_ENV=production \

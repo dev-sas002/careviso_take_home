@@ -1,7 +1,7 @@
 /*
  * Application styles.
  *
- * Bootstrap 5 arrives through Webpacker (app/javascript/packs/application.js);
+ * Bootstrap 5 and select2 arrive through esbuild (app/javascript/vendor.css);
  * this file is the thin layer on top of it — a small set of tokens and the few
  * components the app actually has. Deliberately not a design system.
  *

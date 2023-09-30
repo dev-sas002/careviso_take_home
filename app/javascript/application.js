@@ -1,14 +1,11 @@
 import $ from 'jquery'
-window.jQuery = $
-window.$ = $
-
-import 'select2/dist/js/select2.min.js'
-import 'select2/dist/css/select2.min.css'
-import '@popperjs/core'
-import 'bootstrap/dist/js/bootstrap'
-import 'bootstrap/dist/css/bootstrap.css'
+import select2 from 'select2'
+import 'bootstrap'
 import Rails from '@rails/ujs'
 
+// select2's CommonJS build exports a factory that installs $.fn.select2 on the
+// jQuery instance it is given.
+select2(window, $)
 Rails.start()
 
 // Multi-selects for "which products" on the order and package forms.
