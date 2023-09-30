@@ -5,7 +5,7 @@ set of products, find the **smallest set of packages whose combined contents are
 order**: every ordered product shipped once, nothing surplus in the box.
 
 That is minimum-cardinality *exact cover*. It is NP-hard, it is the graded deliverable, and it
-is what most of this README is about. Around it sits a Rails 7 CRUD UI for products, packages
+is what most of this README is about. Around it sits a Rails 8.1 CRUD UI for products, packages
 and orders, plus one JSON endpoint that answers the question for a given order.
 
 The example from the brief, which is also the seed data:
@@ -34,22 +34,24 @@ docker compose down -v           # stop, and drop the database volume
 Compose starts PostgreSQL, waits for it, runs `db:prepare` and an idempotent `db:seed`, then boots
 Puma. Host ports are **8180** (app) and **8181** (PostgreSQL). The seed data is the worked example
 above plus a small clinical-supplies catalogue with three more orders, one of which deliberately
-has no exact shipment. The image is a three-stage build — Node, Yarn and `build-essential` stay in
-the builder, the runtime carries only `libpq5` and `postgresql-client` and runs as a non-root
-`rails` user. Build and boot are both verified: `/health` answered `{"status":"ok","database":"ok"}`
-and the suite inside the image reported 184 examples, 0 failures.
+has no exact shipment. The image is a three-stage build on Ruby 3.4 and Debian bookworm — Node 24,
+Yarn and `build-essential` stay in the builder, the runtime carries only `libpq5` and
+`postgresql-client` and runs as a non-root `rails` user. `curl localhost:8180/health` answers
+`{"status":"ok","database":"ok"}` once it is up.
 
-Without Docker, this needs Ruby 3.0.x, PostgreSQL and Yarn:
+Without Docker, this needs Ruby 3.4 (`.ruby-version`), Node 24 (`.nvmrc`), Yarn 1 and PostgreSQL:
 
 ```shell
 bundle install
 yarn install
 cp .env.example .env             # then edit DB_USERNAME / DB_PASSWORD
 bin/rails db:setup               # create, load schema, seed
+yarn build                       # bundle app/javascript; `yarn build --watch` while editing
 bin/rails server
 
-bundle exec rspec                              # 184 examples
-bin/lint                                       # rubocop + rubocop-rails, installed on demand
+bin/rails db:test:prepare                      # also rebuilds the JavaScript bundle
+bundle exec rspec                              # 187 examples
+bin/lint                                       # rubocop + rubocop-rails
 bundle exec rake package_selection:benchmark   # timings across catalogue sizes
 bundle exec rake package_selection:states      # states visited as orders grow
 bundle exec rake package_selection:hard        # the adversarial case
@@ -60,6 +62,8 @@ The test database is built from `db/schema.rb` (`bin/rails db:test:prepare` refr
 
 ## What it looks like
 
+Captured from the seeded Compose stack with Playwright, at 1440×900 and 390×844.
+
 | The order page, with its computed shipment | The package catalogue |
 | --- | --- |
 | ![Order detail showing its optimal shipment](docs/screenshots/order-shipment.png) | ![Packages index](docs/screenshots/packages-index.png) |
@@ -67,6 +71,19 @@ The test database is built from `db/schema.rb` (`bin/rails db:test:prepare` refr
 | The orders list, with its shipment modal | An order that has no exact shipment |
 | --- | --- |
 | ![Orders index with the shipment modal open](docs/screenshots/orders-modal.png) | ![Order with no exact shipment](docs/screenshots/order-no-shipment.png) |
+
+Building an order with the product picker:
+
+![New order form with the select2 product picker open](docs/screenshots/order-form.png)
+
+| Orders on a phone | An order on a phone | Navigation on a phone |
+| --- | --- | --- |
+| ![Orders index at phone width](docs/screenshots/mobile-orders-index.png) | ![Order detail at phone width](docs/screenshots/mobile-order-shipment.png) | ![Expanded navigation at phone width](docs/screenshots/mobile-navigation.png) |
+
+The front end is deliberately small: server-rendered ERB with Bootstrap 5, bundled by esbuild
+through `jsbundling-rails` into `app/assets/builds` and served by Sprockets. The only JavaScript
+is the select2 product picker and the modal that calls the JSON endpoint; deleting works as a
+plain form without it.
 
 ## The search
 
@@ -126,17 +143,18 @@ request may visit, past which the search raises `SearchLimitExceeded` and the en
 
 ### Measured, not asserted
 
-`bundle exec rake package_selection:benchmark`, on an M-series laptop:
+`bundle exec rake package_selection:benchmark`, inside the Docker image (Ruby 3.4) on an
+M-series laptop:
 
 ```
 case                     order  packages       kept   packages  exact cover  brute force
 ------------------------------------------------------------------------------------------
-the brief's example          3         7          4          1       0.0 ms       0.1 ms
-a small warehouse            8        42         23          2       0.1 ms          n/a
+the brief's example          3         7          4          1       0.0 ms       0.2 ms
+a small warehouse            8        42         23          2       0.0 ms          n/a
 a real catalogue            12       203         75          3       0.1 ms          n/a
 a big catalogue             16      1004        262          4       0.3 ms          n/a
-a very big catalogue        20      5005        811          5       1.1 ms          n/a
-a silly catalogue           24     20006       1930          6       3.0 ms          n/a
+a very big catalogue        20      5005        811          5       1.0 ms          n/a
+a silly catalogue           24     20006       1930          6       2.7 ms          n/a
 ```
 
 `kept` is how many packages survive filtering, `packages` the size of the answer. Brute force runs
@@ -154,18 +172,18 @@ is none, which the search has to *prove*:
 ```
   order  packages  states visited         time
 -----------------------------------------------
-      7        21              21       0.1 ms
+      7        21              21       0.0 ms
       9        36              55       0.1 ms
-     11        55             144       0.4 ms
-     13        78             377       1.1 ms
-     15       105             987       3.5 ms
-     17       136            2584      10.6 ms
-     19       171            6765      28.2 ms
-     21       210           17711     100.0 ms
+     11        55             144       0.3 ms
+     13        78             377       0.9 ms
+     15       105             987       2.6 ms
+     17       136            2584       7.4 ms
+     19       171            6765      22.0 ms
+     21       210           17711      64.9 ms
 ```
 
 Exponential, as it must be, but at roughly φⁿ rather than 2ⁿ. The state counts are deterministic and
-the task reproduces them exactly; the times were measured inside the Docker image (a host run is faster).
+the task reproduces them exactly; the times are from the same Docker run.
 
 ## Two solvers, one contract
 
@@ -207,7 +225,7 @@ it up; the shared spec `"a package selection strategy"` is the contract it must 
 | Status | Body | When |
 | --- | --- | --- |
 | `200` | `{"shipment_packages":["Package6","Package3"]}` | solved |
-| `404` | `{"error":"Order not found"}` | no such order |
+| `404` | `{"error":"Order not found"}` | no such order, or no `order_id` at all |
 | `404` | `{"error":"No valid packages found"}` | nothing ships the order exactly |
 | `422` | `{"error":"Order is too large to package synchronously"}` | the search hit its work budget |
 
@@ -315,6 +333,9 @@ the index pages gained `includes` and pagination, and the join tables gained the
 - **Quantities are not modelled.** An order is a *set*: the same product cannot be ordered twice,
   and packages hold one of each — the brief is stated that way and the bitmask representation
   depends on it. There is no cost or weight either, so "smallest set" counts packages only.
-- **Ruby 3.0 is end of life**, pinned by the original exercise. The Gemfile allows any 3.0.x and
-  the image uses 3.0.2, because no official 3.0.1 image exists on a Debian release whose package
-  archives are still alive.
+- **select2 still needs jQuery.** It is the only reason jQuery is in the bundle (pinned to 3.x,
+  which select2 4.1 is built against); a jQuery-free picker would cut most of the 260 KB bundle.
+
+## Licence
+
+MIT, see [LICENSE](LICENSE).
