@@ -51,6 +51,7 @@ RSpec.describe ProductsController, type: :controller do
       it "re-renders the new template" do
         post :create, params: { product: invalid_attributes }
         expect(response).to render_template(:new)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -99,6 +100,7 @@ RSpec.describe ProductsController, type: :controller do
       it "re-renders the edit template" do
         put :update, params: { id: product.id, product: invalid_attributes }
         expect(response).to render_template(:edit)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -125,6 +127,8 @@ RSpec.describe ProductsController, type: :controller do
     it "redirects to products#index" do
       delete :destroy, params: { id: product.id }
       expect(response).to redirect_to(products_path)
+      expect(response).to have_http_status(:see_other)
+      expect(flash[:success]).to eq("Product was deleted.")
     end
 
     it "deletes a product that belongs to a package" do

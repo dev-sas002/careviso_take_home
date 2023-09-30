@@ -51,6 +51,7 @@ RSpec.describe PackagesController, type: :controller do
       it "re-renders the new template" do
         post :create, params: { package: invalid_attributes }
         expect(response).to render_template(:new)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -100,6 +101,7 @@ RSpec.describe PackagesController, type: :controller do
       it "re-renders the edit template" do
         put :update, params: { id: package.id, package: invalid_attributes }
         expect(response).to render_template(:edit)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -154,6 +156,8 @@ RSpec.describe PackagesController, type: :controller do
     it "redirects to packages#index" do
       delete :destroy, params: { id: package.id }
       expect(response).to redirect_to(packages_path)
+      expect(response).to have_http_status(:see_other)
+      expect(flash[:success]).to eq("Package was deleted.")
     end
   end
 end

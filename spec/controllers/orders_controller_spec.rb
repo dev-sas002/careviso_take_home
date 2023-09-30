@@ -106,6 +106,8 @@ RSpec.describe OrdersController, type: :controller do
         post :create, params: { order: { product_ids: [""] } }
 
         expect(response).to render_template(:new)
+
+        expect(response).to have_http_status(:unprocessable_content)
         expect(flash.now[:error]).to match(/Products can't be blank/)
       end
     end
@@ -155,6 +157,8 @@ RSpec.describe OrdersController, type: :controller do
         put :update, params: { id: order.id, order: { product_ids: [""] } }
 
         expect(response).to render_template(:edit)
+
+        expect(response).to have_http_status(:unprocessable_content)
         expect(flash.now[:error]).to match(/Products can't be blank/)
       end
     end
@@ -187,6 +191,8 @@ RSpec.describe OrdersController, type: :controller do
     it "redirects to orders#index" do
       delete :destroy, params: { id: order.id }
       expect(response).to redirect_to(orders_path)
+      expect(response).to have_http_status(:see_other)
+      expect(flash[:success]).to eq("Order was deleted.")
     end
   end
 

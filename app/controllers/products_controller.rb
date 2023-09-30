@@ -20,7 +20,7 @@ class ProductsController < ApplicationController
       redirect_to @product
     else
       flash.now[:error] = @product.errors.full_messages.to_sentence
-      render :new
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -30,13 +30,14 @@ class ProductsController < ApplicationController
       redirect_to @product
     else
       flash.now[:error] = @product.errors.full_messages.to_sentence
-      render :edit
+      render :edit, status: :unprocessable_content
     end
   end
 
   def destroy
     @product.destroy
-    redirect_to products_path
+    flash[:success] = "Product was deleted."
+    redirect_to products_path, status: :see_other
   end
 
   private

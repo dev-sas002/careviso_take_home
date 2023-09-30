@@ -69,7 +69,7 @@ RSpec.describe "HTML pages", type: :request do
   it "shows validation errors inline when an order has no products" do
     post orders_path, params: { order: { product_ids: [""] } }
 
-    expect(response).to have_http_status(:success)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(response.body).to include("stopped this from being saved")
   end
 

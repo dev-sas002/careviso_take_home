@@ -31,7 +31,7 @@ class OrdersController < ApplicationController
       redirect_to @order
     else
       flash.now[:error] = @order.errors.full_messages.to_sentence
-      render :new
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -41,13 +41,14 @@ class OrdersController < ApplicationController
       redirect_to @order
     else
       flash.now[:error] = @order.errors.full_messages.to_sentence
-      render :edit
+      render :edit, status: :unprocessable_content
     end
   end
 
   def destroy
     @order.destroy
-    redirect_to orders_path
+    flash[:success] = "Order was deleted."
+    redirect_to orders_path, status: :see_other
   end
 
   private

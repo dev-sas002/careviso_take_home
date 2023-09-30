@@ -24,7 +24,7 @@ class PackagesController < ApplicationController
       redirect_to @package
     else
       flash.now[:error] = @package.errors.full_messages.to_sentence
-      render :new
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -34,13 +34,14 @@ class PackagesController < ApplicationController
       redirect_to @package
     else
       flash.now[:error] = @package.errors.full_messages.to_sentence
-      render :edit
+      render :edit, status: :unprocessable_content
     end
   end
 
   def destroy
     @package.destroy
-    redirect_to packages_path
+    flash[:success] = "Package was deleted."
+    redirect_to packages_path, status: :see_other
   end
 
   private
