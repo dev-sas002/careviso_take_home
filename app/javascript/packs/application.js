@@ -25,19 +25,31 @@ const enhanceProductSelects = () => {
 
 // The orders list asks the JSON endpoint for the optimal shipment and renders it
 // in a modal. Bootstrap 5 hands us the button that opened the modal, so no
-// bookkeeping attributes are needed.
+// bookkeeping attributes are needed. Package names are user-entered, so every
+// piece of text goes in through textContent, never innerHTML.
+const paragraph = (text, className = 'mb-0') => {
+  const p = document.createElement('p')
+  p.className = className
+  p.textContent = text
+  return p
+}
+
 const renderShipment = (body, packages) => {
   if (!packages || packages.length === 0) {
-    body.innerHTML =
-      '<p class="mb-0">No combination of packages ships this order exactly.</p>'
+    body.replaceChildren(paragraph('No combination of packages ships this order exactly.'))
     return
   }
 
-  const items = packages.map((name) => `<li>${name}</li>`).join('')
-  body.innerHTML = `
-    <p class="mb-2">${packages.length} package${packages.length === 1 ? '' : 's'}, no surplus:</p>
-    <ol class="shipment-list mb-0">${items}</ol>
-  `
+  const list = document.createElement('ol')
+  list.className = 'shipment-list mb-0'
+  packages.forEach((name) => {
+    const item = document.createElement('li')
+    item.textContent = name
+    list.appendChild(item)
+  })
+
+  const count = `${packages.length} package${packages.length === 1 ? '' : 's'}, no surplus:`
+  body.replaceChildren(paragraph(count, 'mb-2'), list)
 }
 
 const wirePackagesModal = () => {
@@ -49,20 +61,20 @@ const wirePackagesModal = () => {
     const body = document.getElementById('packagesModalBody')
 
     document.getElementById('packagesModalOrderId').textContent = orderId
-    document.getElementById('packagesModalOrderLink').setAttribute('href', `/orders/${orderId}`)
-    body.innerHTML = '<p class="text-muted mb-0">Working it out…</p>'
+    document.getElementById('packagesModalOrderLink').setAttribute('href', `/orders/${encodeURIComponent(orderId)}`)
+    body.replaceChildren(paragraph('Working it out…', 'text-muted mb-0'))
 
-    fetch(`/select_optimal_packages?order_id=${orderId}`)
+    fetch(`/select_optimal_packages?order_id=${encodeURIComponent(orderId)}`, { headers: { Accept: 'application/json' } })
       .then((response) => response.json().then((payload) => ({ ok: response.ok, payload })))
       .then(({ ok, payload }) => {
         if (ok) {
           renderShipment(body, payload.shipment_packages)
         } else {
-          body.innerHTML = `<p class="mb-0">${payload.error || 'No valid combination found'}</p>`
+          body.replaceChildren(paragraph(payload.error || 'No valid combination found'))
         }
       })
       .catch(() => {
-        body.innerHTML = '<p class="mb-0">Could not reach the packaging service.</p>'
+        body.replaceChildren(paragraph('Could not reach the packaging service.'))
       })
   })
 }
