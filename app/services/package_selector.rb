@@ -1,23 +1,25 @@
+# Selects the minimal set of packages that exactly fulfill an order (no extra products).
+# Uses recursive backtracking to explore combinations and returns the one with fewest packages.
 class PackageSelector
   def self.select_optimal_packages(order, available_packages)
+    return nil if order.nil? || order.empty? || available_packages.nil? || available_packages.empty?
     find_optimal_combination(order, available_packages)
   end
-  
+
   private
 
   def self.fulfill_order?(order, packages)
     products_combined = packages.flatten
     order.all? { |product| products_combined.include?(product) } && (order & products_combined).size == order.size
   end
-  
-  # Recursively finds the optimal combination of packages to fulfill an order
+
+  # Recursively finds the optimal combination of packages to fulfill an order.
   # Args:
-  # - order: An array of products to be fulfilled
-  # - packages: A list of available packages
-  # - current_combination: An array that keeps track of the current package combination
-  #
+  #   order: Array of product names to be fulfilled
+  #   packages: List of available packages (each element is a Hash of package_name => product_names)
+  #   current_combination: Accumulator of [package_name, product_names] pairs for current path
   # Returns:
-  # - An array containing the names of the optimal combination of packages
+  #   Array of package names (smallest set that exactly fulfills the order), or nil if none.
   def self.find_optimal_combination(order, packages, current_combination = [])
     current_products = current_combination.flat_map(&:last)
 
@@ -50,8 +52,8 @@ class PackageSelector
     possible_combinations.min_by(&:size)
   end
 
-  # Checks if there are extra products in the combination that are not in the order
+  # Returns true if the combination has extra products or wrong count (not an exact match).
   def self.extra_products?(order, combination_products)
-    !((combination_products - order).empty? && combination_products.length === order.length)
+    !((combination_products - order).empty? && combination_products.length == order.length)
   end
 end
