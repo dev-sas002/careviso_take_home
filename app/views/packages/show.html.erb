@@ -1,0 +1,17 @@
+<div class="container mt-5">
+  <h1 class="display-4 text-center mb-5">Package Detail</h1>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Package ID: <%= @package.id %></h5>
+      <p class="card-text">
+        Name: <%= @package.name %>
+      </p>
+    </div>
+  </div>
+
+  <div class="text-center">
+    <%= link_to 'Edit', edit_package_path(@package), class: 'btn btn-warning btn-sm mr-2' %> 
+    <%= link_to 'Delete', @package, method: :delete, class: 'btn btn-danger btn-sm' %> 
+  </div>
+</div>

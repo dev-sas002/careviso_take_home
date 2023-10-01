@@ -1,0 +1,20 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV['DB_USERNAME'] || 'postgres' %> 
+  password: <%= ENV['DB_PASSWORD'] %>
+
+development:
+  <<: *default
+  database: careviso_take_home_development
+
+test:
+  <<: *default
+  database: careviso_take_home_test
+
+production:
+  <<: *default
+  database: careviso_take_home_production
+  username: careviso_take_home
+  password: <%= ENV["CAREVISO_TAKE_HOME_DATABASE_PASSWORD"] %>

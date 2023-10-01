@@ -1,0 +1,29 @@
+<div class="container mt-5">
+  <h1 class="display-4 text-center mb-5">All Packages</h1>
+
+<table class="table table-striped table-hover">
+  <thead class="thead-light">
+    <tr>
+      <th>Package ID</th>
+      <th>Name</th>
+      <th>Products</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @packages.each do |package| %>
+      <tr>
+        <td><%= package.id %></td>
+        <td><%= package.name %></td>
+        <td><%= package.products.map(&:name).join(', ') %></td>
+        <td>
+          <%= link_to 'Edit', edit_package_path(package), class: 'btn btn-warning btn-sm' %>
+          <%= link_to 'Delete', package, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: 'Are you sure you want to delete this package?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'New Package', new_package_path, class: 'btn btn-primary mb-3' %>
+</div>
