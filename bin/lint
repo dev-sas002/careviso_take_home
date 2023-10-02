@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Runs RuboCop against .rubocop.yml.
+#
+# RuboCop is a developer tool rather than something the application needs at
+# runtime, so it is installed on demand here instead of being carried in the
+# Gemfile — the app's dependency set stays exactly what the exercise shipped.
+set -euo pipefail
+
+RUBOCOP_VERSION="${RUBOCOP_VERSION:-1.69.0}"
+RUBOCOP_RAILS_VERSION="${RUBOCOP_RAILS_VERSION:-2.29.1}"
+
+gem install --conservative --no-document \
+  "rubocop:${RUBOCOP_VERSION}" "rubocop-rails:${RUBOCOP_RAILS_VERSION}" >/dev/null
+
+exec rubocop "$@"

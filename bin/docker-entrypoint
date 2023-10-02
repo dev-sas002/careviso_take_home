@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Waits for Postgres, brings the schema up to date, seeds (idempotently), then
+# runs whatever the image was asked to run. This is what makes
+# `docker compose up` a one-command start with a populated app.
+set -euo pipefail
+
+if [ -n "${DB_HOST:-}" ]; then
+  until pg_isready --host="${DB_HOST}" --port="${DB_PORT:-5432}" --username="${DB_USERNAME:-postgres}" --quiet; do
+    echo "waiting for postgres at ${DB_HOST}:${DB_PORT:-5432}…"
+    sleep 1
+  done
+fi
+
+if [ "${SKIP_DB_SETUP:-false}" != "true" ]; then
+  bundle exec rails db:prepare
+  bundle exec rails db:seed
+fi
+
+exec "$@"
