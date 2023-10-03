@@ -1,4 +1,5 @@
 class PackageSelectorsController < ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :order_not_found
 
   def select_optimal_packages
     shipment = PackageSelector.select_optimal_packages(order_products, available_packages)
@@ -24,5 +25,9 @@ class PackageSelectorsController < ApplicationController
     @available_packages ||= Package.all.map do |package|
       { package.name => package.products.pluck(:name) }
     end
+  end
+
+  def order_not_found
+    render json: { error: 'Order not found' }, status: :not_found
   end
 end
