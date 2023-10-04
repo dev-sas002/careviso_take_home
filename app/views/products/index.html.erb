@@ -1,0 +1,39 @@
+<% content_for :title, "Products" %>
+
+<%= render "shared/page_header",
+           title: "Products",
+           subtitle: "Everything that can be ordered or packed. A product is just a unique name.",
+           actions: link_to("New product", new_product_path, class: "btn btn-primary") %>
+
+<div class="card">
+  <% if @products.any? %>
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th scope="col" class="col-id">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col" class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @products.each do |product| %>
+          <tr>
+            <td class="col-id"><%= product.id %></td>
+            <td><%= link_to product.name, product, class: "row-link" %></td>
+            <td class="text-end table-actions">
+              <%= link_to "Edit", edit_product_path(product), class: "btn btn-sm btn-outline-secondary" %>
+              <%= link_to "Delete", product, method: :delete, class: "btn btn-sm btn-outline-danger",
+                          data: { confirm: "Delete #{product.name}? It will be removed from every order and package." } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <%= render "shared/empty_state",
+               message: "No products yet.",
+               action: link_to("Add the first product", new_product_path, class: "btn btn-sm btn-primary") %>
+  <% end %>
+</div>
+
+<%= render "shared/pagination", pagination: pagination, path: products_path %>

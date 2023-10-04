@@ -1,0 +1,41 @@
+<% content_for :title, "Packages" %>
+
+<%= render "shared/page_header",
+           title: "Packages",
+           subtitle: "A package is a fixed set of products. The selector combines them to fill orders exactly.",
+           actions: link_to("New package", new_package_path, class: "btn btn-primary") %>
+
+<div class="card">
+  <% if @packages.any? %>
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th scope="col" class="col-id">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Contents</th>
+          <th scope="col" class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @packages.each do |package| %>
+          <tr>
+            <td class="col-id"><%= package.id %></td>
+            <td><%= link_to package.name, package, class: "row-link" %></td>
+            <td><%= render "shared/product_badges", products: package.products %></td>
+            <td class="text-end table-actions">
+              <%= link_to "Edit", edit_package_path(package), class: "btn btn-sm btn-outline-secondary" %>
+              <%= link_to "Delete", package, method: :delete, class: "btn btn-sm btn-outline-danger",
+                          data: { confirm: "Delete #{package.name}?" } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <%= render "shared/empty_state",
+               message: "No packages yet. Without packages an order cannot be shipped.",
+               action: link_to("Add the first package", new_package_path, class: "btn btn-sm btn-primary") %>
+  <% end %>
+</div>
+
+<%= render "shared/pagination", pagination: pagination, path: packages_path %>

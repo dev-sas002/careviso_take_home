@@ -1,0 +1,23 @@
+<% content_for :title, @package.name %>
+
+<%= render "shared/page_header",
+           title: @package.name,
+           subtitle: "Package ##{@package.id}",
+           actions: link_to("Back to packages", packages_path, class: "btn btn-outline-secondary") %>
+
+<div class="card">
+  <div class="card-body">
+    <dl class="detail-list">
+      <dt>Contents</dt>
+      <dd><%= render "shared/product_badges", products: @package.products %></dd>
+
+      <dt>Size</dt>
+      <dd><%= pluralize(@package.products.size, "product") %></dd>
+    </dl>
+  </div>
+  <div class="card-footer d-flex gap-2">
+    <%= link_to "Edit", edit_package_path(@package), class: "btn btn-sm btn-outline-secondary" %>
+    <%= link_to "Delete", @package, method: :delete, class: "btn btn-sm btn-outline-danger",
+                data: { confirm: "Delete #{@package.name}?" } %>
+  </div>
+</div>

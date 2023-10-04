@@ -1,0 +1,7 @@
+<%# Locals: message, action (optional HTML) %>
+<div class="empty-state">
+  <p class="mb-2"><%= message %></p>
+  <% if local_assigns[:action].present? %>
+    <%= action %>
+  <% end %>
+</div>

@@ -1,0 +1,13 @@
+<%# Locals: record %>
+<% if record.errors.any? %>
+  <div class="alert alert-danger">
+    <p class="mb-1 fw-semibold">
+      <%= pluralize(record.errors.count, "problem") %> stopped this from being saved:
+    </p>
+    <ul class="mb-0">
+      <% record.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

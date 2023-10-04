@@ -1,0 +1,17 @@
+<div class="card form-card">
+  <div class="card-body">
+    <%= form_for @product do |f| %>
+      <%= render "shared/form_errors", record: @product %>
+
+      <div class="mb-3">
+        <%= f.label :name, "Product name", class: "form-label" %>
+        <%= f.text_field :name, class: "form-control", required: true, autofocus: true %>
+      </div>
+
+      <div class="d-flex gap-2">
+        <%= f.submit class: "btn btn-primary" %>
+        <%= link_to "Cancel", products_path, class: "btn btn-outline-secondary" %>
+      </div>
+    <% end %>
+  </div>
+</div>
