@@ -1,0 +1,20 @@
+<%# Fed by the JSON endpoint; see app/javascript/packs/application.js %>
+<div class="modal fade" id="packagesModal" tabindex="-1" aria-labelledby="packagesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="packagesModalLabel">
+          Optimal shipment for order #<span id="packagesModalOrderId"></span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="packagesModalBody">
+        <p class="text-muted mb-0">Working it out…</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-sm btn-outline-primary" id="packagesModalOrderLink">Open order</a>
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

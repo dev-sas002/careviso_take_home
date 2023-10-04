@@ -1,0 +1,45 @@
+<% content_for :title, "Orders" %>
+
+<%= render "shared/page_header",
+           title: "Orders",
+           subtitle: "An order is a set of products. Open one to see the packages that ship it exactly.",
+           actions: link_to("New order", new_order_path, class: "btn btn-primary") %>
+
+<div class="card">
+  <% if @orders.any? %>
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th scope="col" class="col-id">ID</th>
+          <th scope="col">Products</th>
+          <th scope="col" class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @orders.each do |order| %>
+          <tr>
+            <td class="col-id"><%= link_to "##{order.id}", order, class: "row-link" %></td>
+            <td><%= render "shared/product_badges", products: order.products %></td>
+            <td class="text-end table-actions">
+              <button type="button" class="btn btn-sm btn-outline-primary"
+                      data-bs-toggle="modal" data-bs-target="#packagesModal"
+                      data-order-id="<%= order.id %>">
+                Show packages
+              </button>
+              <%= link_to "Edit", edit_order_path(order), class: "btn btn-sm btn-outline-secondary" %>
+              <%= link_to "Delete", order, method: :delete, class: "btn btn-sm btn-outline-danger",
+                          data: { confirm: "Delete order ##{order.id}?" } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <%= render "shared/empty_state",
+               message: "No orders yet.",
+               action: link_to("Create the first order", new_order_path, class: "btn btn-sm btn-primary") %>
+  <% end %>
+</div>
+
+<%= render "shared/pagination", pagination: pagination, path: orders_path %>
+<%= render "packages_modal" %>

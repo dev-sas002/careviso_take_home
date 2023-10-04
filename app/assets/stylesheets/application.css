@@ -1,0 +1,291 @@
+/*
+ * Application styles.
+ *
+ * Bootstrap 5 arrives through Webpacker (app/javascript/packs/application.js);
+ * this file is the thin layer on top of it — a small set of tokens and the few
+ * components the app actually has. Deliberately not a design system.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+:root {
+  --ink: #16201f;
+  --ink-muted: #5c6b69;
+  --surface: #ffffff;
+  --page: #f4f6f6;
+  --line: #e2e8e7;
+  --brand: #0f766e;
+  --brand-dark: #115e59;
+  --brand-tint: #e6f2f0;
+}
+
+body {
+  background-color: var(--page);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Navbar ------------------------------------------------------------------ */
+
+.app-navbar {
+  background-color: var(--brand-dark);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.app-navbar .navbar-brand {
+  align-items: center;
+  color: #ffffff;
+  display: inline-flex;
+  font-weight: 600;
+  gap: 0.6rem;
+  letter-spacing: 0.01em;
+}
+
+.app-navbar .brand-mark {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 0.5rem;
+  display: inline-grid;
+  font-size: 0.85rem;
+  font-weight: 700;
+  height: 1.9rem;
+  place-items: center;
+  width: 1.9rem;
+}
+
+.app-navbar .nav-link {
+  border-radius: 0.375rem;
+  color: rgba(255, 255, 255, 0.78);
+  padding: 0.35rem 0.75rem;
+}
+
+.app-navbar .nav-link:hover {
+  color: #ffffff;
+}
+
+.app-navbar .nav-link.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.app-navbar .navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Page scaffolding -------------------------------------------------------- */
+
+.page-header {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  font-size: 1.65rem;
+  font-weight: 650;
+  margin: 0;
+}
+
+.page-subtitle {
+  color: var(--ink-muted);
+  margin: 0.35rem 0 0;
+  max-width: 62ch;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.card-header {
+  background: transparent;
+  border-bottom: 1px solid var(--line);
+  font-weight: 600;
+}
+
+.card-footer {
+  background: transparent;
+  border-top: 1px solid var(--line);
+}
+
+.form-card {
+  max-width: 640px;
+}
+
+/* Tables ------------------------------------------------------------------ */
+
+.table > thead th {
+  background: #fafbfb;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.table > tbody > tr > td,
+.table > thead > tr > th {
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+}
+
+.table > tbody > tr:last-child > td {
+  border-bottom: 0;
+}
+
+.col-id {
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+  width: 5rem;
+}
+
+.row-link {
+  color: var(--ink);
+  font-weight: 550;
+  text-decoration: none;
+}
+
+.row-link:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+.table-actions .btn + .btn {
+  margin-left: 0.35rem;
+}
+
+/* Badges, empty states, pagination ---------------------------------------- */
+
+.badge-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.product-badge {
+  background: var(--brand-tint);
+  border: 1px solid #cfe3e0;
+  border-radius: 999px;
+  color: var(--brand-dark);
+  font-weight: 550;
+  padding: 0.3rem 0.65rem;
+}
+
+.empty-state {
+  color: var(--ink-muted);
+  padding: 2.5rem 1rem;
+  text-align: center;
+}
+
+.pagination-bar {
+  align-items: center;
+  color: var(--ink-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.pagination-summary {
+  font-size: 0.875rem;
+}
+
+/* Order detail ------------------------------------------------------------ */
+
+.detail-list {
+  display: grid;
+  gap: 0.4rem 1.5rem;
+  grid-template-columns: 9rem 1fr;
+  margin: 0;
+}
+
+.detail-list dt {
+  color: var(--ink-muted);
+  font-weight: 550;
+}
+
+.detail-list dd {
+  margin: 0;
+}
+
+.shipment-card {
+  border-color: #cfe3e0;
+}
+
+.shipment-card .card-header {
+  background: var(--brand-tint);
+  border-bottom-color: #cfe3e0;
+  border-radius: 0.75rem 0.75rem 0 0;
+  color: var(--brand-dark);
+}
+
+.shipment-summary {
+  color: var(--ink-muted);
+  margin-bottom: 1rem;
+}
+
+.shipment-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.shipment-list li {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.shipment-name {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.shipment-name:hover {
+  color: var(--brand);
+}
+
+/* Buttons ----------------------------------------------------------------- */
+
+.btn-primary {
+  background-color: var(--brand);
+  border-color: var(--brand);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--brand-dark);
+  border-color: var(--brand-dark);
+}
+
+.btn-outline-primary {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--brand);
+  border-color: var(--brand);
+}
+
+.select2-container--default .select2-selection--multiple {
+  border-color: #ced4da;
+  border-radius: 0.375rem;
+  min-height: 38px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background-color: var(--brand-tint);
+  border-color: #cfe3e0;
+  color: var(--brand-dark);
+}
