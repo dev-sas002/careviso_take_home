@@ -78,5 +78,25 @@ RSpec.describe PackageSelector do
         expect(result).to be_nil
       end
     end
+
+    context 'when order is nil or empty' do
+      it 'returns nil for nil order' do
+        expect(described_class.select_optimal_packages(nil, packages)).to be_nil
+      end
+
+      it 'returns nil for empty order' do
+        expect(described_class.select_optimal_packages([], packages)).to be_nil
+      end
+    end
+
+    context 'when available_packages is nil or empty' do
+      it 'returns nil for nil packages' do
+        expect(described_class.select_optimal_packages(order, nil)).to be_nil
+      end
+
+      it 'returns nil for empty packages' do
+        expect(described_class.select_optimal_packages(order, [])).to be_nil
+      end
+    end
   end
 end

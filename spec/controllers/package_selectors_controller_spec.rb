@@ -34,5 +34,15 @@ RSpec.describe PackageSelectorsController, type: :controller do
         expect(json_response['error']).to eq('No valid packages found')
       end
     end
+
+    context 'when order_id is invalid or order does not exist' do
+      it 'returns 404 with error message' do
+        post :select_optimal_packages, params: { order_id: 0 }
+        json_response = JSON.parse(response.body)
+
+        expect(response).to have_http_status(:not_found)
+        expect(json_response['error']).to eq('Order not found')
+      end
+    end
   end
 end
