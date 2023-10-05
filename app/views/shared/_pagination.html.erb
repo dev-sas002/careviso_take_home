@@ -1,0 +1,20 @@
+<%# Locals: pagination, path %>
+<% if pagination && !pagination.empty? %>
+  <nav class="pagination-bar" aria-label="Pagination">
+    <span class="pagination-summary">
+      Showing <%= pagination.range.first %>–<%= pagination.range.last %> of <%= pagination.total_count %>
+    </span>
+
+    <% if pagination.total_pages > 1 %>
+      <span class="btn-group btn-group-sm">
+        <%= link_to "Previous", url_for(page: pagination.page - 1),
+                    class: "btn btn-outline-secondary #{'disabled' if pagination.first_page?}" %>
+        <span class="btn btn-outline-secondary disabled">
+          Page <%= pagination.page %> of <%= pagination.total_pages %>
+        </span>
+        <%= link_to "Next", url_for(page: pagination.page + 1),
+                    class: "btn btn-outline-secondary #{'disabled' if pagination.last_page?}" %>
+      </span>
+    <% end %>
+  </nav>
+<% end %>
