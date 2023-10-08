@@ -1,0 +1,17 @@
+.git
+.gitignore
+.github
+node_modules
+vendor/bundle
+project_venv
+log
+tmp
+public/packs
+public/packs-test
+public/assets
+docs/screenshots
+coverage
+.env
+.env.*
+*.log
+.DS_Store
