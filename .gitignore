@@ -39,3 +39,12 @@ yarn-debug.log*
 .DS_Store
 .env
 package-lock.json
+
+# Exclude instructions and plan files from version control
+instructions.md
+**/instructions*.md
+**/*plan*.md
+**/.cursor/**
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
