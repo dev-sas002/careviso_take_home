@@ -48,6 +48,6 @@ class PackagesController < ApplicationController
   end
 
   def package_params
-    params.require(:package).permit(:name ,product_ids: [])
+    params.require(:package).permit(:name, product_ids: [])
   end
 end
